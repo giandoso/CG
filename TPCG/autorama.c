@@ -200,10 +200,9 @@ void pessoa(float a, float b){
 }
 
 //Fuction to draw the track
-void track(float R1,float R2)
-{
+void track(float R1,float R2){
 	float X,Y,Z;
-int  y;
+	int  y;
 	glBegin(GL_QUAD_STRIP);
 	for( y=0;y<=361;y+=1)
 	{
@@ -221,9 +220,8 @@ int  y;
 }
 
 //Function that generates a cylinder
-void cylinder(float r,float y)
-{
-	float x,z; int d;
+void cylinder(float r,float l){
+	float x,y,z; int d;
 	glBegin(GL_QUAD_STRIP);
 	for( d=0;d<=362;d+=1)
 	{
@@ -600,10 +598,12 @@ typedef struct Obstaculo_{
 
 Obstaculo obs[OBSTACULOS];
 
+
 void iniciaObstaculos(){
 	int aleatorio;
 	srand(time(NULL));
 	int i;
+	printf("  Id    X    Y    M\n");
 	for(i=0;i<10;i++){
 		aleatorio = rand() %10;
 		if(aleatorio > 4){
@@ -613,13 +613,15 @@ void iniciaObstaculos(){
 				obs[i].obsX = 515*cos(c*(36*i));
 				obs[i].obsY = 515*sin(c*(36*i));
 				//randomizar opção de modelo
-				// tree(x,y);
+				obs[i].modelo = rand() %3;
+				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//540
 				obs[i].obsX = 540*cos(c*(36*i));
 				obs[i].obsY = 540*sin(c*(36*i));
 				//randomizar opção de modelo
-				// tree(x,y);
+				obs[i].modelo = rand() %3;
+				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}else{
 			aleatorio = rand()%10;
@@ -628,13 +630,15 @@ void iniciaObstaculos(){
 				obs[i].obsX = 565*cos(c*(36*i));
 				obs[i].obsY = 565*sin(c*(36*i));
 				//randomizar opção de modelo
-				// tree(x,y);
+				obs[i].modelo = rand() %3;
+				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//590
 				obs[i].obsX = 590*cos(c*(36*i));
 				obs[i].obsY = 590*sin(c*(36*i));
 				//randomizar opção de modelo
-				// tree(x,y);
+				obs[i].modelo = rand() %3;
+				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}
 	}
@@ -646,9 +650,30 @@ void populaPista(){
 	for(i=0;i<10;i++){
 			x=obs[i].obsX;
 			y=obs[i].obsY;
-			pessoa(x,y);
+			switch(obs[i].modelo){
+				case 0:
+					tree(x,y);
+				break;
+				case 1:
+					tree2(x,y);
+				break;
+				case 2:
+					tree2(x,y);
+				break;
+			}
+
 	}
 }
+void colisao(){
+	int i;
+	for (i = 0; i < OBSTACULOS; i++) {
+		if(carx == obs[i].obsX && cary == obs[i].obsY){
+			printf("colisao");
+		}else{}
+	}
+}
+
+
 // //Cone shaped trees
 // for(p=0;p<=360;p+=30)
 // {
@@ -667,14 +692,16 @@ void keys(unsigned char key,int x,int y)
 	if(key=='W' || key=='w')
 	{
 		if(speed < 0.03){
-			speed += 0.03;
+			speed += 0.005;
 		}
 		printf("%f\n", speed);
 	}
 	if(key=='S' || key=='s')
 	{
-		if(speed > -0.02){
-			speed -= 0.03;
+		if(speed > 0.01){
+			speed -= 0.01;
+		}else{
+			speed = 0.01;
 		}
 		printf("%f\n", speed);
 	}
@@ -778,7 +805,7 @@ void idle()
 
 	if(start==1)
 	{
-		angle+=0.05 + speed;
+		angle+= 0 + speed;
 		if(angle==TWO_PI)
 		{
 			angle-=TWO_PI;
@@ -787,7 +814,6 @@ void idle()
 
 		carx=MID*sin(angle);
 		cary=MID*cos(angle);
-
 
 		switch(KEY)
 		{
@@ -839,6 +865,7 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	view();
+	colisao();
 	glutSwapBuffers();
 
 }
@@ -874,6 +901,7 @@ void main(int argc,char **argv)
 {
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
+
 
 	printf("**********RACING CAR IN A RACE TRACK***********\n");
 	printf("\n\tPRESS:\n");
