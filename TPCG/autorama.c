@@ -1,13 +1,20 @@
 #include<GL/glut.h>
 #include<math.h>
 #include<stdio.h>
+#include<time.h>
 
 #define c 3.14/180
 #define PI  3.14
 #define TWO_PI  2.0 * PI
 #define RAD_TO_DEG  180.0 / PI
 
+#define OBSTACULOS 10
+
+void populaPista();
+
 //Coordinates for the chassis of the car
+
+
 
 float p[]={5.5,-2.5,1},q[]={5.5,-7.5,1},r[]={10.7,-7.5,1},s[]={10.7,-2.5,1};
 
@@ -71,6 +78,9 @@ float speed = 0.0;
 float carx=0,cary=570; //Variables that specify position of the car
 
 int rot=0; //rotation angle for the wheels
+
+
+
 
 //Function to generate a cone
 void cone()
@@ -317,13 +327,16 @@ void scenery()
 	glColor3f(0.3,0.3,0.6);
 	track(610,510);
 
+	populaPista();
+
+
 	//Cone shaped trees
 	for(p=0;p<=360;p+=30)
 	{
 		x=300*cos(c*p);
 		y=300*sin(c*p);
 		tree(x,y);
-            }
+  }
 
 
 
@@ -472,6 +485,82 @@ void car()
 	glPopMatrix();
 }
 
+/*
+Criar estrutura de dados 'obstaculo'
+criar função que popula a pista com obstaculos
+criar funcao que compara posição atual do carro c obstaculo
+caso verdade carro 'bateu'
+encerrar jogo
+caso falso carro desviou
+muda a posição do obstaculo que acabou de ser desviado
+*/
+
+typedef struct Obstaculo_{
+	int obsX, obsY;
+	int modelo;
+}Obstaculo;
+
+Obstaculo obs[OBSTACULOS];
+
+void iniciaObstaculos(){
+	int aleatorio;
+	srand(time(NULL));
+	int i;
+	for(i=0;i<10;i++){
+		aleatorio = rand() %10;
+		if(aleatorio > 4){
+			aleatorio = rand()%10;
+			if(aleatorio > 4){
+				//515
+				obs[i].obsX = 515*cos(c*(36*i));
+				obs[i].obsY = 515*sin(c*(36*i));
+				//randomizar opção de modelo
+				// tree(x,y);
+			}else{
+				//540
+				obs[i].obsX = 540*cos(c*(36*i));
+				obs[i].obsY = 540*sin(c*(36*i));
+				//randomizar opção de modelo
+				// tree(x,y);
+			}
+		}else{
+			aleatorio = rand()%10;
+			if(aleatorio > 4){
+				//565
+				obs[i].obsX = 565*cos(c*(36*i));
+				obs[i].obsY = 565*sin(c*(36*i));
+				//randomizar opção de modelo
+				// tree(x,y);
+			}else{
+				//590
+				obs[i].obsX = 590*cos(c*(36*i));
+				obs[i].obsY = 590*sin(c*(36*i));
+				//randomizar opção de modelo
+				// tree(x,y);
+			}
+		}
+	}
+}
+
+void populaPista(){
+	int i;
+	int x,y;
+	for(i=0;i<10;i++){
+			x=obs[i].obsX;
+			y=obs[i].obsY;
+			tree(x,y);
+	}
+}
+// //Cone shaped trees
+// for(p=0;p<=360;p+=30)
+// {
+// 	x=300*cos(c*p);
+// 	y=300*sin(c*p);
+// 	tree(x,y);
+// }
+// bool colisao();
+
+
 //Keyboard Callback Function
 void keys(unsigned char key,int x,int y)
 {
@@ -545,7 +634,7 @@ void view()
 			// 	glRotatef(angle*RAD_TO_DEG, 0.0,0.0,1.0);
 			// 	glTranslatef(-carx,-cary,0);
 			// 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-			// 	scenery();
+			// 	();
 			// glPopMatrix();
       //
 			// break;
@@ -572,6 +661,7 @@ void view()
 				glTranslatef(-carx,-cary,0);
 				glLightfv(GL_LIGHT0, GL_POSITION, pos);
 				scenery();
+
 			glPopMatrix();
 
 			break;
@@ -590,15 +680,16 @@ void idle()
 
 	if(start==1)
 	{
-		angle+=0.01 + speed;
-		printf("%f\n",angle);
+		angle+=0.05 + speed;
 		if(angle==TWO_PI)
 		{
 			angle-=TWO_PI;
 		}
 
+
 		carx=MID*sin(angle);
 		cary=MID*cos(angle);
+
 
 		switch(KEY)
 		{
@@ -698,6 +789,7 @@ void main(int argc,char **argv)
 	glutInitWindowPosition(500,500);
 	glutInitWindowSize(500,500);
 	glutCreateWindow("Computer Graphics");
+	iniciaObstaculos();
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
 	glutKeyboardFunc(keys);
