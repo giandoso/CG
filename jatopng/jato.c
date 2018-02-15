@@ -14,8 +14,8 @@
 #define TEXTURA_DO_AVIAO "camuflagem.png"
 
 
-GLint WIDTH =800;
-GLint HEIGHT=600;
+GLint WIDTH =1800;
+GLint HEIGHT=1600;
 
 GLfloat obs[3]={0.0,7.0,0.0};
 GLfloat look[3]={0.0,3.0,0.0};
@@ -78,17 +78,17 @@ void compoe_jato(void){
   glNewList(jato, GL_COMPILE);
 
   /* asas */
-  glBegin(GL_TRIANGLES); 
+  glBegin(GL_TRIANGLES);
   glTexCoord2fv(cta[0]); glVertex3fv(asa[0]);
   glTexCoord2fv(cta[1]); glVertex3fv(asa[1]);
   glTexCoord2fv(cta[3]); glVertex3fv(asa[2]);
   glEnd();
-  
+
   /* corpo */
   quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
   gluCylinder(quadric, 0.5, 0.5, 4, 12, 3);
-  
+
   /* nariz */
   quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
@@ -98,7 +98,7 @@ void compoe_jato(void){
   glPopMatrix();
 
   /* cauda */
-  glBegin(GL_POLYGON); 
+  glBegin(GL_POLYGON);
   glTexCoord2fv(cta[0]); glVertex3fv(cauda[0]);
   glTexCoord2fv(cta[1]); glVertex3fv(cauda[1]);
   glTexCoord2fv(cta[2]); glVertex3fv(cauda[2]);
@@ -128,14 +128,23 @@ void idle(){
   if (aceleracao>15.0 && aceleracao<20.0){
     rotacao += 0.2;
   }
-  glutPostRedisplay();  
+  glutPostRedisplay();
 }
 void idle2(){
   aceleracao -= velocidade;
-  glutPostRedisplay();  
+  glutPostRedisplay();
 }
 
+
+GLfloat triangleVertices[] =
+{
+  20,100, 0,
+  100, 300, 0,
+  500,50, 0,
+  500, 450, 0
+};
 void display(void){
+
   glEnable(GL_DEPTH_TEST);
 
   //glDepthMask(GL_TRUE);
@@ -151,55 +160,102 @@ void display(void){
 
   /* habilita/desabilita uso de texturas*/
   if(texturas){
-    glEnable(GL_TEXTURE_2D);  
+    glEnable(GL_TEXTURE_2D);
   }
   else{
     glDisable(GL_TEXTURE_2D);
   }
   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
 
-  // grava a transformacao atual
+
   glPushMatrix();
   glColor4f(COR_DO_PLANO);
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   glBindTexture(GL_TEXTURE_2D,textura_plano);
-  glBegin(GL_QUADS);
-  glTexCoord2fv(ctp[0]);  glVertex3f(-10,0,10);
-  glTexCoord2fv(ctp[1]);  glVertex3f(10,0,10);
-  glTexCoord2fv(ctp[2]);  glVertex3f(10,0,-10);
-  glTexCoord2fv(ctp[3]);  glVertex3f(-10,0,-10);
-  glEnd();
-  glScalef(0.2,0.2,0.2);
-  glRotatef(0.0,0.0,0.0 + rotacao);
-  glTranslatef(0.0,2.0 + altura,-30.0 + aceleracao);
-  glColor4f(COR_DO_AVIAO);
-  glBindTexture(GL_TEXTURE_2D,textura_aviao);
-  glCallList(jato);
-  glPopMatrix();
-  // volta para a ultima transformacao
+  int cont1, cont2;
+  int scl=10;
+  for(cont1=0;cont1<10/scl;cont1++){
+    glBegin(GL_QUADS);
+    for(cont2=0;cont2<10/scl;cont2++){
+      glVertex3f(-1,0,100);
+      glVertex3f(1,0,100);
+      glVertex3f(1,0,-100);
+      glVertex3f(-1,0,-100);
+    }
+    glEnd();
+  }
 
-  // grava a transformacao atual
-  glPushMatrix();
-  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-  glColor4f(COR_DO_PLANO);
-  glBindTexture(GL_TEXTURE_2D,textura_plano);
-   
-  glBegin(GL_QUADS);
-  glTexCoord2fv(ctp[0]);  glVertex3f(-10,0,10);
-  glTexCoord2fv(ctp[1]);  glVertex3f(10,0,10);
-  glTexCoord2fv(ctp[2]);  glVertex3f(10,0,-10);
-  glTexCoord2fv(ctp[3]);  glVertex3f(-10,0,-10);
-  glEnd();
-  glScalef(0.2,0.2,0.2);
-  glRotatef(0.0,0.0,0.0 + rotacao);
-  glTranslatef(0.0,2.0 + altura,-30.0 + aceleracao);
-  glColor4f(COR_DO_AVIAO);
-  glBindTexture(GL_TEXTURE_2D,textura_aviao);
-  //glCallList(jato);
-  glPopMatrix();
-  // volta para a ultima transformacao
-  
-  glPopMatrix();
+
+
+
+  // glPushMatrix();
+  // glColor4f(COR_DO_PLANO);
+  // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  // glBindTexture(GL_TEXTURE_2D,textura_plano);
+  // glBegin(GL_QUADS);
+  // glTexCoord2fv(ctp[0]);  glVertex3f(-1,0,100);
+  // glTexCoord2fv(ctp[1]);  glVertex3f(1,0,100);
+  // glTexCoord2fv(ctp[2]);  glVertex3f(1,0,-100);
+  // glTexCoord2fv(ctp[3]);  glVertex3f(-1,0,-100);
+  // glEnd();
+
+
+
+
+
+
+  // // grava a transformacao atual
+  // glPushMatrix();
+  // glColor4f(COR_DO_PLANO);
+  // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  // glBindTexture(GL_TEXTURE_2D,textura_plano);
+  // glBegin(GL_QUADS);
+  // glTexCoord2fv(ctp[0]);  glVertex3f(-1,0,100);
+  // glTexCoord2fv(ctp[1]);  glVertex3f(1,0,100);
+  // glTexCoord2fv(ctp[2]);  glVertex3f(1,0,-100);
+  // glTexCoord2fv(ctp[3]);  glVertex3f(-1,0,-100);
+  // glEnd();
+
+  //
+  //
+  // glScalef(0.2,0.2,0.2);
+  // glRotatef(0.0,0.0,0.0,rotacao);
+  // glTranslatef(0.0,2.0 + altura,-30.0 + aceleracao);
+  // glColor4f(COR_DO_AVIAO);
+  // glBindTexture(GL_TEXTURE_2D,textura_aviao);
+  // glCallList(jato);
+  // glPopMatrix();
+  // // volta para a ultima transformacao
+  //
+  // // grava a transformacao atual
+  // glPushMatrix();
+  // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+  // glColor4f(COR_DO_PLANO);
+  // glBindTexture(GL_TEXTURE_2D,textura_plano);
+  //
+  // // Jato textura_aviao
+  // // glBegin(GL_QUADS);
+  // // glTexCoord2fv(ctp[0]);  glVertex3f(-10,0,10);
+  // // glTexCoord2fv(ctp[1]);  glVertex3f(10,0,10);
+  // // glTexCoord2fv(ctp[2]);  glVertex3f(10,0,-10);
+  // // glTexCoord2fv(ctp[3]);  glVertex3f(-10,0,-10);
+  // // glEnd();
+  //
+  //
+  // glScalef(0.2,0.2,0.2);
+  // // glRotatef(0.0,0.0,0.0,rotacao);
+  // glTranslatef(0.0,2.0 + altura,-30.0 + aceleracao);
+  // glColor4f(COR_DO_AVIAO);
+  // glBindTexture(GL_TEXTURE_2D,textura_aviao);
+  // //glCallList(jato);
+  // glPopMatrix();
+  // // volta para a ultima transformacao
+  //
+  // glPopMatrix();
+
+
+
+
   glutSwapBuffers();
 }
 
@@ -215,7 +271,7 @@ void special(int key, int x, int y){
     glutPostRedisplay();
     break;
   case GLUT_KEY_LEFT:
-    tetaxz=tetaxz+2;
+    raioxz=raioxz+2;
     glutPostRedisplay();
     break;
   case GLUT_KEY_RIGHT:
@@ -262,7 +318,7 @@ void carregar_texturas(void){
 
 void init(){
   glEnable(GL_DEPTH_TEST);
-  
+
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   carregar_texturas();
@@ -283,7 +339,7 @@ int main(int argc,char **argv){
   }
 
   init();
-  
+
   glutKeyboardFunc(keyboard);
   glutSpecialFunc(special);
   glutDisplayFunc(display);
