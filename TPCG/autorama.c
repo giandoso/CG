@@ -11,7 +11,12 @@
 #define OBSTACULOS 10
 
 void populaPista();
-
+void conelaranja(float a,float b);
+void rect(float p[],float q[],float r[],float s[]);
+void cylinder(float r,float y);
+void circle(float R);
+void actall(float R1,float R2);
+void alloy(float R1,float R2);
 //Coordinates for the chassis of the car
 
 
@@ -83,11 +88,8 @@ int rot=0; //rotation angle for the wheels
 
 
 //Function to generate a cone
-void cone()
-{
+void cone(){
 	float i,x,y,r=10;
-
-	glColor3f(0.0,0.7,0.2);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0,0,20);
 	for(i=0;i<=361;i+=2)
@@ -99,7 +101,103 @@ void cone()
 	glEnd();
 }
 
+void conelaranja(float a,float b){
+	glColor3f(1, 0.35, 0);
+	glPushMatrix();
+		glTranslatef(a,b,0);
+		glScalef(1, 0.4, 0.5);
+		cone();		
+	glPopMatrix();
+}
 
+void poste(float a,float b){
+	//Corpo do poste
+	glColor3f(0.5, 0.5, 1);
+	glPushMatrix();
+		glTranslatef(a,b,-1);
+		glRotatef(90,1,0,0);
+		cylinder(1.2, 20);
+	glPopMatrix();
+
+	//Cima do poste
+	glColor3f(1, 0.9, 0);
+	glPushMatrix();
+		glTranslatef(a,b,15);
+		glRotatef(90,1,0,0);
+		cylinder(5, 10);
+	glPopMatrix();
+}
+
+void buraco(float a, float b){	
+	glColor3f(0, 0, 0);
+	glPushMatrix();
+		glTranslatef(a,b,-1);
+		glRotatef(90,1,0,0);
+		circle(10);
+	glPopMatrix();
+}
+
+void latalixo(float a, float b){
+	glColor3f(0, 0, 0);
+	glPushMatrix();		
+		glTranslatef(a,b, -1);
+		glRotatef(90,1,0,0);
+		cylinder(5, 10);
+	glPopMatrix();
+	glColor3f(1, 1, 1);
+	glPushMatrix();		
+		glTranslatef(a,b, 9);
+		glRotatef(90,1,0,0);
+		circle(5);
+	glPopMatrix();
+} 
+
+void pessoa(float a, float b){
+	glColor3f(0.5,0.2,0.8);
+	//Legs
+	glPushMatrix();
+		glTranslatef(3,-3.5,1);
+		cylinder(0.4,3);
+	glPopMatrix();
+	glPushMatrix();
+		glTranslatef(3,-6.5,1);
+		cylinder(0.4,3);
+	glPopMatrix();
+
+	//Hands
+	glPushMatrix();
+		glTranslatef(3,-3.5,2.5);
+		glRotatef(90,0,0,1);
+		cylinder(0.4,3);
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(3,-6.5,2.5);
+		glRotatef(90,0,0,1);
+		cylinder(0.4,3);
+	glPopMatrix();
+
+	//Head
+	glPushMatrix();
+		glTranslatef(3,-5,4);
+		glutSolidSphere (1.0, 20, 16);
+	glPopMatrix();
+
+
+//Body
+	glPushMatrix();
+		glTranslatef(3,-5,1);
+		glRotatef(90,1,0,0);
+		cylinder(1,2);
+	glPopMatrix();
+
+	//Circle
+	glPushMatrix();
+		glTranslatef(3,-5,3);
+		glRotatef(90,1,0,0);
+		circle(1);
+	glPopMatrix();
+}
 
 //Fuction to draw the track
 void track(float R1,float R2)
@@ -123,18 +221,15 @@ int  y;
 }
 
 //Function that generates a cylinder
-void cylinder(float r,float l)
+void cylinder(float r,float y)
 {
-	float x,y,z; int d;
+	float x,z; int d;
 	glBegin(GL_QUAD_STRIP);
 	for( d=0;d<=362;d+=1)
 	{
 		x=r*cos(c*d);
 		z=r*sin(c*d);
-		y=0;
-		glVertex3f(x,y,z);
-
-		y=l;
+		glVertex3f(x,0,z);
 		glVertex3f(x,y,z);
 	}
 	glEnd();
@@ -152,6 +247,7 @@ void tree(float a,float b)
 	//Cone shaped tree top
 	glPushMatrix();
 		glTranslatef(a,b,8);
+		glColor3f(0.0,0.7,0.2);
 		cone();
 	glPopMatrix();
 
@@ -226,6 +322,7 @@ void actall(float R1,float R2)
 	}
 	glEnd();
 }
+
 //Function to draw a circle
 void circle(float R)
 {
@@ -445,7 +542,8 @@ void chassis()
 	glColor3f(0,0.2,0.9);
 
 	rect(p12,q12,r12,s12);
-	rect(p13,q13,r13,s13);								rect(p14,q14,r14,s14);
+	rect(p13,q13,r13,s13);							
+	rect(p14,q14,r14,s14);
 	rect(p15,q15,r15,s15);
 	rect(p16,q16,r16,s16);
 	rect(p17,q17,r17,s17);
@@ -548,7 +646,7 @@ void populaPista(){
 	for(i=0;i<10;i++){
 			x=obs[i].obsX;
 			y=obs[i].obsY;
-			tree(x,y);
+			pessoa(x,y);
 	}
 }
 // //Cone shaped trees
