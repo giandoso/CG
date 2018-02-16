@@ -97,6 +97,10 @@ char lifeString[3];
 
 int imune;
 
+int voltas=0;
+int showIntroMessage=1;
+
+
 //Function to generate a cone
 void cone(){
 	float i,x,y,r=10;
@@ -382,16 +386,6 @@ void scenery()
 	//Track
 	glColor3f(0.3,0.3,0.6);
 	track(610,510);
-
-	for (float g=515; g<590; g+=25){
-		glBegin(GL_LINE_LOOP);
-			glColor3f(1,1,1);
-			X=R1*cos(c*y);
-			glVertex3fv(X, g, 1);
-
-			glVertex3fv(X, g, 1);;
-		glEnd();
-	}
 
 	populaPista();
 	colisao();
@@ -875,7 +869,7 @@ void displayLife(){
 void displayIntroMessage(){
 	if(showIntroMessage == 1){
 		glPushMatrix();
-		glColor3f(0.0,0.0,0.0);
+		glColor3f(1.0,0.0,0.0);
 		glTranslatef(16.0,27.0,12.0);
 		glScalef(0.04, 0.04, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
@@ -888,7 +882,7 @@ void displayIntroMessage(){
 		glPopMatrix();
 
 		glPushMatrix();
-		glColor3f(0.0,0.0,0.0);
+		glColor3f(1.0,0.0,0.0);
 		glTranslatef(16.0,32.0,8.0);
 		glScalef(0.035, 0.035, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
