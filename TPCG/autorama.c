@@ -450,6 +450,8 @@ void scenery()
 
 
 
+
+
 	//Sphere shaped trees
 	for( p=100;p<=460;p+=30)
 	{
