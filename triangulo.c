@@ -92,19 +92,44 @@ void display(){
 
   glPushMatrix();
   glColor3f(AMARELO);
-  glTranslatef(-1.0 , 0.0,0.0);
-  glRotatef(135.0, 0.0, 0.0, 1.0);
-  glTranslatef(-1.0 , 0.0,0.0);
+  glTranslatef(-1.0,0.0,0.0);
+  glRotatef(135.0,0.0,0.0,1.0);
+  glTranslatef(-1.0,0.0,0.0);
   DrawTriangle();
   glPopMatrix();
 
   glPushMatrix();
   glColor3f(VERDE);
-  glScalef(0.5,1.0,1.0);
-  glTranslatef(-3.0,0.0,0.0);
-  glRotatef(-45.0, 0.0, 0.0, 1.0);
+  glRotatef(180.0, 0.0, 0.0, 1.0);
+  glTranslatef(-0.5,-2.0,0.0);
+  glScalef(1.0,2.0,1.0);
   DrawTriangle();
   glPopMatrix();
+
+  glPushMatrix();
+  glColor3f(LARANJA);
+  glTranslatef(-1.0,0.0,0.0);
+  glRotatef(-45.0,0.0,0.0,1.0);
+  glScalef(0.5,1.0,1.0);
+  glTranslatef(-1.0,0.0,0.0);
+  DrawTriangle();
+  glPopMatrix();
+
+  glPushMatrix();
+  glColor3f(AMARELO);
+  glRotatef(270.0, 0.0, 0.0, 1.0);
+  glTranslatef(-3.0,-2.0,0.0);
+
+  DrawTriangle();
+  glPopMatrix();
+
+  // glPushMatrix();
+  // glColor3f(VERDE);
+  // glScalef(0.5,1.0,1.0);
+  // glTranslatef(-3.0,0.0,0.0);
+  // glRotatef(-45.0, 0.0, 0.0, 1.0);
+  // DrawTriangle();
+  // glPopMatrix();
 
   // glPushMatrix();
   // glColor3f(VERDE);
