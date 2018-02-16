@@ -15,6 +15,7 @@ void conelaranja(float a,float b);
 void rect(float p[],float q[],float r[],float s[]);
 void cylinder(float r,float y);
 void circle(float R);
+void faixa(float R1, float R2);
 void actall(float R1,float R2);
 void alloy(float R1,float R2);
 //Coordinates for the chassis of the car
@@ -85,8 +86,6 @@ float carx=0,cary=570; //Variables that specify position of the car
 int rot=0; //rotation angle for the wheels
 
 
-
-
 //Function to generate a cone
 void cone(){
 	float i,x,y,r=10;
@@ -152,60 +151,12 @@ void latalixo(float a, float b){
 	glPopMatrix();
 } 
 
-void pessoa(float a, float b){
-	glColor3f(0.5,0.2,0.8);
-	//Legs
-	glPushMatrix();
-		glTranslatef(3,-3.5,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-	glPushMatrix();
-		glTranslatef(3,-6.5,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	//Hands
-	glPushMatrix();
-		glTranslatef(3,-3.5,2.5);
-		glRotatef(90,0,0,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(3,-6.5,2.5);
-		glRotatef(90,0,0,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	//Head
-	glPushMatrix();
-		glTranslatef(3,-5,4);
-		glutSolidSphere (1.0, 20, 16);
-	glPopMatrix();
-
-
-//Body
-	glPushMatrix();
-		glTranslatef(3,-5,1);
-		glRotatef(90,1,0,0);
-		cylinder(1,2);
-	glPopMatrix();
-
-	//Circle
-	glPushMatrix();
-		glTranslatef(3,-5,3);
-		glRotatef(90,1,0,0);
-		circle(1);
-	glPopMatrix();
-}
-
 //Fuction to draw the track
 void track(float R1,float R2){
 	float X,Y,Z;
 	int  y;
 	glBegin(GL_QUAD_STRIP);
-	for( y=0;y<=361;y+=1)
-	{
+	for( y=0;y<=361;y+=1){
 		X=R1*cos(c*y);
 		Y=R1*sin(c*y);
 		Z=-1;
@@ -218,10 +169,9 @@ void track(float R1,float R2){
 	}
 	glEnd();
 }
-
 //Function that generates a cylinder
-void cylinder(float r,float l){
-	float x,y,z; int d;
+void cylinder(float r,float y){
+	float x, z; int d;
 	glBegin(GL_QUAD_STRIP);
 	for( d=0;d<=362;d+=1)
 	{
@@ -403,15 +353,15 @@ void driver()
 void scenery()
 {
 	float x,y; int p;
-	//Background
-	glColor3f(0.4,0.9,0.9);
+	//ceu
+	glColor3f(0, 0, 0);
 	glPushMatrix();
 		glRotatef(90,1,0,0);
 		cylinder(1000,1000);
 	glPopMatrix();
 
 	//Ground
-	glColor3f(0,1,0);
+	glColor3f(0,0,0);
 	glPushMatrix();
 		glTranslatef(0,0,-1.1);
 		glRotatef(90,1,0,0);
@@ -422,28 +372,30 @@ void scenery()
 	glColor3f(0.3,0.3,0.6);
 	track(610,510);
 
+	for (float g=515; g<590; g+=25){
+		glBegin(GL_LINE_LOOP);
+			glColor3f(1,1,1);
+			X=R1*cos(c*y);
+			glVertex3fv(X, g, 1);
+
+			glVertex3fv(X, g, 1);;
+		glEnd();
+	}
+
 	populaPista();
 
 
-	//Cone shaped trees
+	//ceu
 	for(p=0;p<=360;p+=30)
 	{
 		x=300*cos(c*p);
 		y=300*sin(c*p);
-		tree(x,y);
+		glTranslatef(0, 0, 2);
+		tree(x, y);
   }
 
-
-
-//Sphere shaped trees
-	for( p=100;p<=460;p+=30)
-	{
-		x=800*cos(c*p);
-		y=800*sin(c*p);
-		tree2(x,y);
-	}
-
 }
+
 //Function to draw triangles
 void tri(float a[],float b[],float z[])
 {
@@ -655,10 +607,10 @@ void populaPista(){
 					tree(x,y);
 				break;
 				case 1:
-					tree2(x,y);
+					tree(x,y);
 				break;
 				case 2:
-					tree2(x,y);
+					tree(x,y);
 				break;
 			}
 
