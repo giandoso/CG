@@ -10,6 +10,7 @@
 
 #define OBSTACULOS 10
 
+void colisao();
 void populaPista();
 void conelaranja(float a,float b);
 void rect(float p[],float q[],float r[],float s[]);
@@ -18,6 +19,7 @@ void circle(float R);
 void actall(float R1,float R2);
 void alloy(float R1,float R2);
 //Coordinates for the chassis of the car
+
 
 
 
@@ -72,8 +74,9 @@ enum
 } viewpoint = BACK;
 
 
-int MID=590; //Distance of the car on the track from the centre of the track
+int MID=565; //Distance of the car on the track from the centre of the track
 int start=0;
+float auxImunidade=0;
 
 char KEY; //Variable that stores key pressed by user
 
@@ -84,8 +87,20 @@ float carx=0,cary=570; //Variables that specify position of the car
 
 int rot=0; //rotation angle for the wheels
 
+int showScore=0;
+char scoreString[50];
+
+int life=3;
+int showLife=0;
+char lifeString[3];
+
+int imune;
+
+int showIntroMessage=1;
 
 
+
+int voltas=0;
 
 //Function to generate a cone
 void cone(){
@@ -106,7 +121,7 @@ void conelaranja(float a,float b){
 	glPushMatrix();
 		glTranslatef(a,b,0);
 		glScalef(1, 0.4, 0.5);
-		cone();		
+		cone();
 	glPopMatrix();
 }
 
@@ -128,7 +143,7 @@ void poste(float a,float b){
 	glPopMatrix();
 }
 
-void buraco(float a, float b){	
+void buraco(float a, float b){
 	glColor3f(0, 0, 0);
 	glPushMatrix();
 		glTranslatef(a,b,-1);
@@ -139,18 +154,18 @@ void buraco(float a, float b){
 
 void latalixo(float a, float b){
 	glColor3f(0, 0, 0);
-	glPushMatrix();		
+	glPushMatrix();
 		glTranslatef(a,b, -1);
 		glRotatef(90,1,0,0);
 		cylinder(5, 10);
 	glPopMatrix();
 	glColor3f(1, 1, 1);
-	glPushMatrix();		
+	glPushMatrix();
 		glTranslatef(a,b, 9);
 		glRotatef(90,1,0,0);
 		circle(5);
 	glPopMatrix();
-} 
+}
 
 void pessoa(float a, float b){
 	glColor3f(0.5,0.2,0.8);
@@ -184,7 +199,7 @@ void pessoa(float a, float b){
 	glPopMatrix();
 
 
-//Body
+	//Body
 	glPushMatrix();
 		glTranslatef(3,-5,1);
 		glRotatef(90,1,0,0);
@@ -220,8 +235,8 @@ void track(float R1,float R2){
 }
 
 //Function that generates a cylinder
-void cylinder(float r,float l){
-	float x,y,z; int d;
+void cylinder(float r,float y){
+	float x,z; int d;
 	glBegin(GL_QUAD_STRIP);
 	for( d=0;d<=362;d+=1)
 	{
@@ -385,7 +400,7 @@ void driver()
 	glPopMatrix();
 
 
-//Body
+	//Body
 	glPushMatrix();
 		glTranslatef(3,-5,1);
 		glRotatef(90,1,0,0);
@@ -423,7 +438,7 @@ void scenery()
 	track(610,510);
 
 	populaPista();
-
+	colisao();
 
 	//Cone shaped trees
 	for(p=0;p<=360;p+=30)
@@ -435,7 +450,7 @@ void scenery()
 
 
 
-//Sphere shaped trees
+	//Sphere shaped trees
 	for( p=100;p<=460;p+=30)
 	{
 		x=800*cos(c*p);
@@ -540,7 +555,7 @@ void chassis()
 	glColor3f(0,0.2,0.9);
 
 	rect(p12,q12,r12,s12);
-	rect(p13,q13,r13,s13);							
+	rect(p13,q13,r13,s13);
 	rect(p14,q14,r14,s14);
 	rect(p15,q15,r15,s15);
 	rect(p16,q16,r16,s16);
@@ -592,7 +607,7 @@ muda a posição do obstaculo que acabou de ser desviado
 */
 
 typedef struct Obstaculo_{
-	int obsX, obsY;
+	float obsX, obsY;
 	int modelo;
 }Obstaculo;
 
@@ -614,14 +629,14 @@ void iniciaObstaculos(){
 				obs[i].obsY = 515*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
+				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//540
 				obs[i].obsX = 540*cos(c*(36*i));
 				obs[i].obsY = 540*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
+				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}else{
 			aleatorio = rand()%10;
@@ -631,14 +646,14 @@ void iniciaObstaculos(){
 				obs[i].obsY = 565*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
+				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//590
 				obs[i].obsX = 590*cos(c*(36*i));
 				obs[i].obsY = 590*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4d %4d %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
+				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}
 	}
@@ -652,36 +667,20 @@ void populaPista(){
 			y=obs[i].obsY;
 			switch(obs[i].modelo){
 				case 0:
-					tree(x,y);
+					conelaranja(x,y);
 				break;
 				case 1:
-					tree2(x,y);
+					buraco(x,y);
 				break;
 				case 2:
-					tree2(x,y);
+					latalixo(x,y);
 				break;
 			}
 
 	}
 }
-void colisao(){
-	int i;
-	for (i = 0; i < OBSTACULOS; i++) {
-		if(carx == obs[i].obsX && cary == obs[i].obsY){
-			printf("colisao");
-		}else{}
-	}
-}
 
 
-// //Cone shaped trees
-// for(p=0;p<=360;p+=30)
-// {
-// 	x=300*cos(c*p);
-// 	y=300*sin(c*p);
-// 	tree(x,y);
-// }
-// bool colisao();
 
 
 //Keyboard Callback Function
@@ -693,8 +692,11 @@ void keys(unsigned char key,int x,int y)
 	{
 		if(speed < 0.03){
 			speed += 0.005;
+			start = 1;
+			showIntroMessage = 0;
+			showLife = 1;
+			showScore = 1;
 		}
-		printf("%f\n", speed);
 	}
 	if(key=='S' || key=='s')
 	{
@@ -703,18 +705,19 @@ void keys(unsigned char key,int x,int y)
 		}else{
 			speed = 0.01;
 		}
-		printf("%f\n", speed);
 	}
 	if(key=='A' || key=='a')
 	{
-		MID += 25;
-		printf("%d\n", MID);
+		if(MID<590){
+			MID += 25;
+		}
 	}
 
 	if(key=='D' || key=='d')
 	{
-		MID -= 25;
-		printf("%d\n", MID);
+		if(MID>515){
+			MID -= 25;
+		}
 	}
 
 	if(key=='E' || key=='e')
@@ -726,7 +729,9 @@ void keys(unsigned char key,int x,int y)
 	{
 		start=1;
 	}
-
+	if(key == 27){
+		exit(1);
+	}
 }
 
 //Function  that generates a particular view of scene depending on view selected by //user
@@ -783,6 +788,7 @@ void view()
 			car();
 			glPushMatrix();
 				glRotatef(RAD_TO_DEG * angle, 0.0, 0.0, 1.0);
+
 				glTranslatef(-carx,-cary,0);
 				glLightfv(GL_LIGHT0, GL_POSITION, pos);
 				scenery();
@@ -811,7 +817,7 @@ void idle()
 			angle-=TWO_PI;
 		}
 
-
+		colisao();
 		carx=MID*sin(angle);
 		cary=MID*cos(angle);
 
@@ -828,6 +834,7 @@ void idle()
 
 		case 'B':
 		case 'b':viewpoint=BACK;break;
+
 
 		}
 		glutPostRedisplay();
@@ -847,7 +854,7 @@ void init()
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
 
-glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
@@ -856,9 +863,206 @@ glEnable(GL_COLOR_MATERIAL);
 
 }
 
+void insereString(void *font, char *string)
+{
+	// Exibe caractere a caractere
+	while(*string)
+		glutStrokeCharacter(GLUT_STROKE_ROMAN,*string++);
+}
+
+void atualizaScore(){
+	snprintf(scoreString, 50,"Score: %d", voltas*42);
+}
+
+void atualizaLife(){
+	switch(life){
+		case 1:
+			snprintf(lifeString, 30,"@");
+		break;
+		case 2:
+			snprintf(lifeString, 30,"@@");
+		break;
+		case 3:
+			snprintf(lifeString, 30,"@@@");
+		break;
+	}
+}
+
+void displayScore(){
+	if(showScore == 1){
+		// Posiciona o texto stroke usando transformações geométricas
+		glPushMatrix();
+		glColor3f(1.0,0.0,0.0);
+		glTranslatef(10.0,25.0,22.0);
+		glScalef(0.02, 0.02, 0.015); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaScore();
+		insereString(GLUT_STROKE_ROMAN, scoreString);
+		glPopMatrix();
+	}
+}
+
+void displayLife(){
+	if(showLife == 1){
+		glPushMatrix();
+		glColor3f(1.0,0.0,0.0);
+		glTranslatef(10.0,-5.0,22.0);
+		glScalef(0.02, 0.03, 0.015); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, lifeString);
+		glPopMatrix();
+
+	}
+}
+
+void displayIntroMessage(){
+	if(showIntroMessage == 1){
+		glPushMatrix();
+		glColor3f(0.0,0.0,0.0);
+		glTranslatef(16.0,27.0,12.0);
+		glScalef(0.04, 0.04, 0.035); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, "Press 'W' to start\n");
+		glPopMatrix();
+
+		glPushMatrix();
+		glColor3f(0.0,0.0,0.0);
+		glTranslatef(16.0,32.0,8.0);
+		glScalef(0.035, 0.035, 0.035); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, "Use W/A/S/D to move\n");
+		glPopMatrix();
+	}
+}
+
+void negaImune(){
+	if(angle>auxImunidade+0.5){
+		imune=0;
+	}
+}
+
+void colisao(){
+	int i;
+	for (i = 0; i < 10; i++) {
+		if(carx < obs[i].obsX + 5.0 && carx > obs[i].obsX - 5.0 && cary < obs[i].obsY + 5.0 && cary > obs[i].obsY - 5.0){
+			printf("carx: %f, cary: %f\n", carx, cary);
+			printf("obsX: %f, obsY: %f i: %d\n\n\n ", obs[i].obsX, obs[i].obsY, i);
+			if(imune == 0){
+				life--;
+				imune=1;
+				auxImunidade=angle;
+				if(life==0){
+					exit(1); // TODO: restartgame
+				}
+			}
+		}
+	}
+}
+
+void randomizaPista(){
+	if(angle > 6.3 && angle < 6.4){
+		angle = 0.0; //volta completa
+		voltas++;
+		int aleatorio;
+		srand(time(NULL));
+		int i;
+		for(i=5;i<10;i++){
+			aleatorio = rand() %10;
+			if(aleatorio > 4){
+				aleatorio = rand()%10;
+				if(aleatorio > 4){
+					//515
+					obs[i].obsX = 515*cos(c*(36*i));
+					obs[i].obsY = 515*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}else{
+					//540
+					obs[i].obsX = 540*cos(c*(36*i));
+					obs[i].obsY = 540*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}
+			}else{
+				aleatorio = rand()%10;
+				if(aleatorio > 4){
+					//565
+					obs[i].obsX = 565*cos(c*(36*i));
+					obs[i].obsY = 565*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}else{
+					//590
+					obs[i].obsX = 590*cos(c*(36*i));
+					obs[i].obsY = 590*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}
+			}
+		}
+	}
+	if(angle > 3.0 && angle < 3.1){
+		voltas++;
+		int aleatorio;
+		srand(time(NULL));
+		int i;
+		for(i=0;i<5;i++){
+			aleatorio = rand() %10;
+			if(aleatorio > 4){
+				aleatorio = rand()%10;
+				if(aleatorio > 4){
+					//515
+					obs[i].obsX = 515*cos(c*(36*i));
+					obs[i].obsY = 515*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}else{
+					//540
+					obs[i].obsX = 540*cos(c*(36*i));
+					obs[i].obsY = 540*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}
+			}else{
+				aleatorio = rand()%10;
+				if(aleatorio > 4){
+					//565
+					obs[i].obsX = 565*cos(c*(36*i));
+					obs[i].obsY = 565*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}else{
+					//590
+					obs[i].obsX = 590*cos(c*(36*i));
+					obs[i].obsY = 590*sin(c*(36*i));
+					//randomizar opção de modelo
+					obs[i].modelo = rand() %3;
+				}
+			}
+		}
+	}
+}
 
 //Display Callback Function
-
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -866,14 +1070,20 @@ void display()
 	glLoadIdentity();
 	view();
 	colisao();
+	randomizaPista();
+	displayScore();
+	displayLife();
+	displayIntroMessage();
+	negaImune();
+
+
+
+
 	glutSwapBuffers();
 
 }
 
-
-
 //Reshape Function
-
 void reshape(int w, int h)
 {
 	glViewport (0, 0, (GLsizei) w, (GLsizei) h);
@@ -885,32 +1095,11 @@ void reshape(int w, int h)
 }
 
 
-
-
-
-
-
-
-
-
-
-
 //Main Fuction
-
 void main(int argc,char **argv)
 {
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
-
-
-	printf("**********RACING CAR IN A RACE TRACK***********\n");
-	printf("\n\tPRESS:\n");
-	printf("\n\tG or g:To Start or Continue\n");
-	printf("\n\tE or e:To Stop\n");
-	printf("\n\tH or h :Helicopter View\n");
-	printf("\n\tB or b :Back View\n");
-	printf("\n\tS or s :Side View\n");
-	printf("\n\tF or f :Front View\n\n");
 
 	glutInitWindowPosition(500,500);
 	glutInitWindowSize(500,500);
