@@ -16,6 +16,7 @@ void conelaranja(float a,float b);
 void rect(float p[],float q[],float r[],float s[]);
 void cylinder(float r,float y);
 void circle(float R);
+void faixa(float R1, float R2);
 void actall(float R1,float R2);
 void alloy(float R1,float R2);
 //Coordinates for the chassis of the car
@@ -96,11 +97,9 @@ char lifeString[3];
 
 int imune;
 
+int voltas=0;
 int showIntroMessage=1;
 
-
-
-int voltas=0;
 
 //Function to generate a cone
 void cone(){
@@ -167,60 +166,12 @@ void latalixo(float a, float b){
 	glPopMatrix();
 }
 
-void pessoa(float a, float b){
-	glColor3f(0.5,0.2,0.8);
-	//Legs
-	glPushMatrix();
-		glTranslatef(3,-3.5,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-	glPushMatrix();
-		glTranslatef(3,-6.5,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	//Hands
-	glPushMatrix();
-		glTranslatef(3,-3.5,2.5);
-		glRotatef(90,0,0,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	glPushMatrix();
-		glTranslatef(3,-6.5,2.5);
-		glRotatef(90,0,0,1);
-		cylinder(0.4,3);
-	glPopMatrix();
-
-	//Head
-	glPushMatrix();
-		glTranslatef(3,-5,4);
-		glutSolidSphere (1.0, 20, 16);
-	glPopMatrix();
-
-
-	//Body
-	glPushMatrix();
-		glTranslatef(3,-5,1);
-		glRotatef(90,1,0,0);
-		cylinder(1,2);
-	glPopMatrix();
-
-	//Circle
-	glPushMatrix();
-		glTranslatef(3,-5,3);
-		glRotatef(90,1,0,0);
-		circle(1);
-	glPopMatrix();
-}
-
 //Fuction to draw the track
 void track(float R1,float R2){
 	float X,Y,Z;
 	int  y;
 	glBegin(GL_QUAD_STRIP);
-	for( y=0;y<=361;y+=1)
-	{
+	for( y=0;y<=361;y+=1){
 		X=R1*cos(c*y);
 		Y=R1*sin(c*y);
 		Z=-1;
@@ -233,10 +184,9 @@ void track(float R1,float R2){
 	}
 	glEnd();
 }
-
 //Function that generates a cylinder
 void cylinder(float r,float y){
-	float x,z; int d;
+	float x, z; int d;
 	glBegin(GL_QUAD_STRIP);
 	for( d=0;d<=362;d+=1)
 	{
@@ -418,15 +368,15 @@ void driver()
 void scenery()
 {
 	float x,y; int p;
-	//Background
-	glColor3f(0.4,0.9,0.9);
+	//ceu
+	glColor3f(0, 0, 0);
 	glPushMatrix();
 		glRotatef(90,1,0,0);
 		cylinder(1000,1000);
 	glPopMatrix();
 
 	//Ground
-	glColor3f(0,1,0);
+	glColor3f(0,0,0);
 	glPushMatrix();
 		glTranslatef(0,0,-1.1);
 		glRotatef(90,1,0,0);
@@ -440,27 +390,17 @@ void scenery()
 	populaPista();
 	colisao();
 
-	//Cone shaped trees
+	//ceu
 	for(p=0;p<=360;p+=30)
 	{
 		x=300*cos(c*p);
 		y=300*sin(c*p);
-		tree(x,y);
+		glTranslatef(0, 0, 2);
+		tree(x, y);
   }
 
-
-
-
-
-	//Sphere shaped trees
-	for( p=100;p<=460;p+=30)
-	{
-		x=800*cos(c*p);
-		y=800*sin(c*p);
-		tree2(x,y);
-	}
-
 }
+
 //Function to draw triangles
 void tri(float a[],float b[],float z[])
 {
@@ -929,7 +869,7 @@ void displayLife(){
 void displayIntroMessage(){
 	if(showIntroMessage == 1){
 		glPushMatrix();
-		glColor3f(0.0,0.0,0.0);
+		glColor3f(1.0,0.0,0.0);
 		glTranslatef(16.0,27.0,12.0);
 		glScalef(0.04, 0.04, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
@@ -942,7 +882,7 @@ void displayIntroMessage(){
 		glPopMatrix();
 
 		glPushMatrix();
-		glColor3f(0.0,0.0,0.0);
+		glColor3f(1.0,0.0,0.0);
 		glTranslatef(16.0,32.0,8.0);
 		glScalef(0.035, 0.035, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
