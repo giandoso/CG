@@ -119,7 +119,7 @@ void conelaranja(float a,float b){
 	glColor3f(1, 0.35, 0);
 	glPushMatrix();
 		glTranslatef(a,b,0);
-		glScalef(1, 0.4, 0.5);
+		glScalef(0.6, 0.4, 0.5);
 		cone();
 	glPopMatrix();
 }
@@ -184,6 +184,33 @@ void track(float R1,float R2){
 	}
 	glEnd();
 }
+
+void faixa(float R1,float R2){
+	float X,Y,Z;
+	int  y;
+	glBegin(GL_QUAD_STRIP);
+	for( y=0;y<=361;y+=1){
+		X=R1*cos(c*y);
+		Y=R1*sin(c*y);
+		Z=-1;
+		glVertex3f(X,Y,Z);
+
+		X=R2*cos(c*y);
+		Y=R2*sin(c*y);
+		Z=-1;
+		glVertex3f(X,Y,Z);
+	}
+	glEnd();
+}
+
+void estrela(float x, float y, float z){
+	glColor3f(1,1,1);
+	glPushMatrix();
+		glTranslatef(x, y,z- 100);
+		glutSolidSphere(5,3,3);
+	glPopMatrix();;
+}
+
 //Function that generates a cylinder
 void cylinder(float r,float y){
 	float x, z; int d;
@@ -228,7 +255,7 @@ void tree2(float a,float b)
 	glPopMatrix();
 
 	//Sphere shaped tree top
-	glColor3f(0,1,0.3);
+	glColor3f(0.8, 0.65, 0.55);
 	glPushMatrix();
 		glTranslatef(a,b,45);
 		glutSolidSphere(30,10,10);
@@ -369,14 +396,14 @@ void scenery()
 {
 	float x,y; int p;
 	//ceu
-	glColor3f(0, 0, 0);
+	glColor3f(0.21, 0.18, 0.12);
 	glPushMatrix();
 		glRotatef(90,1,0,0);
 		cylinder(1000,1000);
 	glPopMatrix();
 
 	//Ground
-	glColor3f(0,0,0);
+	glColor3f(0.41,0.28,0.22);
 	glPushMatrix();
 		glTranslatef(0,0,-1.1);
 		glRotatef(90,1,0,0);
@@ -384,21 +411,45 @@ void scenery()
 	glPopMatrix();
 
 	//Track
-	glColor3f(0.3,0.3,0.6);
+	glColor3f(0.25,0.15,0.1);
 	track(610,510);
 
 	populaPista();
 	colisao();
 
-	//ceu
-	for(p=0;p<=360;p+=30)
-	{
-		x=300*cos(c*p);
-		y=300*sin(c*p);
-		glTranslatef(0, 0, 2);
-		tree(x, y);
-  }
+	glPushMatrix();
+		glTranslatef(0,0,1);
+		glColor3f(1, 1, 1);
+		faixa(519, 521);
+		faixa(544, 546);
+		faixa(569, 571);
+		faixa(594, 596);
+	glPopMatrix();
 
+
+	//ceu
+	for(p=0;p<=360;p+=5)
+	{
+		x=(1000+rand()%50)*cos(c*p);
+		y=(1000+rand()%50)*sin(c*p);
+		estrela(x,y,rand()%500);
+	}
+
+
+	for(p=0;p<=360;p+=60)
+	{
+
+		x=650*cos(c*p);
+		y=650*sin(c*p);
+		tree2(x,y);
+	}
+	for(p=0;p<=360;p+=120)
+	{
+
+		x=710*cos(c*p);
+		y=710*sin(c*p);
+		tree2(x,y);
+	}
 }
 
 //Function to draw triangles
@@ -612,7 +663,7 @@ void populaPista(){
 					conelaranja(x,y);
 				break;
 				case 1:
-					buraco(x,y);
+					poste(x,y);
 				break;
 				case 2:
 					latalixo(x,y);
