@@ -96,9 +96,14 @@ int showLife=0;
 char lifeString[3];
 
 int imune;
+int score=0;
 
 int voltas=0;
 int showIntroMessage=1;
+
+int showGameOver = 0;
+
+int disableKeyboard = 0;
 
 
 //Function to generate a cone
@@ -604,7 +609,13 @@ typedef struct Obstaculo_{
 	int modelo;
 }Obstaculo;
 
+typedef struct ObstaculoHard_{
+	float obsX, obsY;
+	int modelo;
+}ObstaculoHard;
+
 Obstaculo obs[OBSTACULOS];
+ObstaculoHard obsH[OBSTACULOS];
 
 
 void iniciaObstaculos(){
@@ -654,22 +665,45 @@ void iniciaObstaculos(){
 
 void populaPista(){
 	int i;
-	int x,y;
+	float x,y;
 	for(i=0;i<10;i++){
 			x=obs[i].obsX;
 			y=obs[i].obsY;
+			printf("obj:%f %f\n", obsH[i].obsX,obsH[i].obsY);
+
 			switch(obs[i].modelo){
 				case 0:
 					conelaranja(x,y);
 				break;
 				case 1:
-					poste(x,y);
+					buraco(x,y);
 				break;
 				case 2:
 					latalixo(x,y);
 				break;
 			}
+			if(score>1100){
+				float xH,yH;
 
+				xH=obsH[i].obsX;
+				yH=obsH[i].obsY;
+				switch(obsH[i].modelo){
+
+
+
+
+
+					case 0:
+						conelaranja(xH,yH);
+					break;
+					case 1:
+						poste(xH,yH);
+					break;
+					case 2:
+						latalixo(xH,yH);
+					break;
+				}
+			}
 	}
 }
 
@@ -679,50 +713,56 @@ void populaPista(){
 //Keyboard Callback Function
 void keys(unsigned char key,int x,int y)
 {
-
-	KEY=key;
-	if(key=='W' || key=='w')
-	{
-		if(speed < 0.03){
-			speed += 0.005;
-			start = 1;
-			showIntroMessage = 0;
-			showLife = 1;
-			showScore = 1;
+	if(disableKeyboard == 0){
+		KEY=key;
+		if(key=='W' || key=='w')
+		{
+			if(speed < 0.03){
+				speed += 0.005;
+				start = 1;
+				showIntroMessage = 0;
+				showLife = 1;
+				showScore = 1;
+			}
 		}
-	}
-	if(key=='S' || key=='s')
-	{
-		if(speed > 0.01){
-			speed -= 0.01;
-		}else{
-			speed = 0.01;
+		if(key=='S' || key=='s')
+		{
+			if(speed > 0.01){
+				speed -= 0.01;
+			}else{
+				speed = 0.01;
+			}
 		}
-	}
-	if(key=='A' || key=='a')
-	{
-		if(MID<590){
-			MID += 25;
+		if(key=='A' || key=='a')
+		{
+			if(MID<590){
+				MID += 25;
+			}
 		}
-	}
 
-	if(key=='D' || key=='d')
-	{
-		if(MID>515){
-			MID -= 25;
+		if(key=='D' || key=='d')
+		{
+			if(MID>515){
+				MID -= 25;
+			}
 		}
-	}
 
-	if(key=='E' || key=='e')
-	{
-		start=0;
-	}
+		if(key=='E' || key=='e')
+		{
+			start=0;
+		}
 
-	if(key=='G' || key=='g')
-	{
-		start=1;
+		if(key=='G' || key=='g')
+		{
+			start=1;
+		}
+		if(key == 27){
+			system("pkill ffplay");
+			exit(1);
+		}
 	}
 	if(key == 27){
+		system("pkill ffplay");
 		exit(1);
 	}
 }
@@ -863,8 +903,10 @@ void insereString(void *font, char *string)
 		glutStrokeCharacter(GLUT_STROKE_ROMAN,*string++);
 }
 
+
 void atualizaScore(){
-	snprintf(scoreString, 50,"Score: %d", voltas*42);
+	score+=10;
+	snprintf(scoreString, 50,"Score: %d", score);
 }
 
 void atualizaLife(){
@@ -921,7 +963,7 @@ void displayIntroMessage(){
 	if(showIntroMessage == 1){
 		glPushMatrix();
 		glColor3f(1.0,0.0,0.0);
-		glTranslatef(16.0,27.0,12.0);
+		glTranslatef(16.0,27.0,20.0);
 		glScalef(0.04, 0.04, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
 		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
@@ -934,7 +976,7 @@ void displayIntroMessage(){
 
 		glPushMatrix();
 		glColor3f(1.0,0.0,0.0);
-		glTranslatef(16.0,32.0,8.0);
+		glTranslatef(16.0,32.0,14.0);
 		glScalef(0.035, 0.035, 0.035); // diminui o tamanho do fonte
 		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
 		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
@@ -946,6 +988,51 @@ void displayIntroMessage(){
 		glPopMatrix();
 	}
 }
+
+void displayGameOver(){
+	if(showGameOver == 1){
+		glPushMatrix();
+		glColor3f(1.0,0.0,0.0);
+		glTranslatef(16.0,29.0,18.0);
+		glScalef(0.06, 0.06, 0.050); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, "GAME OVER");
+		glPopMatrix();
+
+		glPushMatrix();
+		glColor3f(1.0,0.0,0.0);
+		glTranslatef(16.0,20.0,13.5);
+		glScalef(0.035, 0.035, 0.035); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, scoreString);
+		glPopMatrix();
+
+		glPushMatrix();
+		glColor3f(1.0,0.0,0.0);
+		glTranslatef(16.0,20.0,24.0);
+		glScalef(0.025, 0.025, 0.025); // diminui o tamanho do fonte
+		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
+		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+
+		glLineWidth(2); // define a espessura da linha
+		atualizaLife();
+		insereString(GLUT_STROKE_ROMAN, "Press 'Esc' to exit.");
+		glPopMatrix();
+
+	}
+}
+
 
 void negaImune(){
 	if(angle>auxImunidade+0.5){
@@ -964,7 +1051,27 @@ void colisao(){
 				imune=1;
 				auxImunidade=angle;
 				if(life==0){
-					exit(1); // TODO: restartgame
+					showLife = 0;
+					showScore = 0;
+					showGameOver = 1;
+					start=0;
+					disableKeyboard = 1;
+				}
+			}
+		}
+		if(carx < obsH[i].obsX + 5.0 && carx > obsH[i].obsX - 5.0 && cary < obsH[i].obsY + 5.0 && cary > obsH[i].obsY - 5.0){
+			printf("carx: %f, cary: %f\n", carx, cary);
+			printf("obsX: %f, obsY: %f i: %d\n\n\n ", obsH[i].obsX, obsH[i].obsY, i);
+			if(imune == 0){
+				life--;
+				imune=1;
+				auxImunidade=angle;
+				if(life==0){
+					showLife = 0;
+					showScore = 0;
+					showGameOver = 1;
+					start=0;
+					disableKeyboard = 1;
 				}
 			}
 		}
@@ -988,12 +1095,47 @@ void randomizaPista(){
 					obs[i].obsY = 515*sin(c*(36*i));
 					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}
+					}
 				}else{
 					//540
 					obs[i].obsX = 540*cos(c*(36*i));
 					obs[i].obsY = 540*sin(c*(36*i));
 					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}
+					}
 				}
 			}else{
 				aleatorio = rand()%10;
@@ -1003,12 +1145,48 @@ void randomizaPista(){
 					obs[i].obsY = 565*sin(c*(36*i));
 					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}
 				}else{
 					//590
 					obs[i].obsX = 590*cos(c*(36*i));
 					obs[i].obsY = 590*sin(c*(36*i));
 					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}
 				}
 			}
 		}
@@ -1028,12 +1206,46 @@ void randomizaPista(){
 					obs[i].obsY = 515*sin(c*(36*i));
 					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}
+					}
 				}else{
 					//540
 					obs[i].obsX = 540*cos(c*(36*i));
 					obs[i].obsY = 540*sin(c*(36*i));
-					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}else if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}
+					}
 				}
 			}else{
 				aleatorio = rand()%10;
@@ -1041,23 +1253,55 @@ void randomizaPista(){
 					//565
 					obs[i].obsX = 565*cos(c*(36*i));
 					obs[i].obsY = 565*sin(c*(36*i));
-					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
-				}else{
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}else if(aleatorio<6){
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 590*cos(c*(36*i));
+							obsH[i].obsY = 590*sin(c*(36*i));
+							//randomizar opção de modelo
+							obsH[i].modelo = rand() %3;
+						}
+					}else{
 					//590
 					obs[i].obsX = 590*cos(c*(36*i));
 					obs[i].obsY = 590*sin(c*(36*i));
-					//randomizar opção de modelo
 					obs[i].modelo = rand() %3;
+					if(score>1000){
+						aleatorio = rand()%9;
+						if(aleatorio<3){
+							obsH[i].obsX = 540*cos(c*(36*i));
+							obsH[i].obsY = 540*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}if(aleatorio<6){
+							obsH[i].obsX = 565*cos(c*(36*i));
+							obsH[i].obsY = 565*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}else{
+							obsH[i].obsX = 515*cos(c*(36*i));
+							obsH[i].obsY = 515*sin(c*(36*i));
+							obsH[i].modelo = rand() %3;
+						}
+					}
+				}
 				}
 			}
 		}
 	}
+	}
+}
 }
 
 //Display Callback Function
-void display()
-{
+void display(){
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -1067,13 +1311,9 @@ void display()
 	displayScore();
 	displayLife();
 	displayIntroMessage();
+	displayGameOver();
 	negaImune();
-
-
-
-
 	glutSwapBuffers();
-
 }
 
 //Reshape Function
@@ -1102,6 +1342,7 @@ void main(int argc,char **argv)
 	glutIdleFunc(idle);
 	glutKeyboardFunc(keys);
 	glutReshapeFunc(reshape);
+	system("ffplay -nodisp song.wav &");
 	init();
 	glutMainLoop();
 }
