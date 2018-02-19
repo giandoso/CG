@@ -33,30 +33,11 @@ float p7[]={5.5,-1,1},q7[]={5.5,-1,3},r7[]={5.5,-2.5,3.5},s7[]={5.5,-2.5,1};
 float p8[]={5.5,-7.5,1},q8[]={5.5,-7.5,3.5},r8[]={5.5,-9,3},s8[]={5.5,-9,1};
 float p9[]={4,-2.5,3.5},q9[]={11,-2.5,3.5},r9[]={11,-7.5,3.5},s9[]={4,-7.5,3.5};
 
-//pontos desecessarios
-// float p1[]={10.7,-9,3},s1[]={12.7,-9,3},q1[]={10.7,-1,3},r1[]={12.7,-1,3};
-// float p2[]={0.5,-1,1},s2[]={5.5,-1,1},q2[]={0.5,-9,1},r2[]={5.5,-9,1};
-// float p6[]={5.5,-2.5,1},q6[]={5.5,-2.5,3.5},r6[]={10.7,-2.5,3.5},s6[]={10.7,-2.5,1};
-// float p7[]={5.5,-7.5,1},q7[]={5.5,-7.5,3.5},r7[]={10.7,-7.5,3.5},s7[]={10.7,-7.5,1};
-// float p8[]={5.5,-7.5,3.5},q8[]={10.7,-7.5,3.5},r8[]={10.7,-6,3.5},s8[]={5.5,-6,3.5};
-// float p9[]={5.5,-2.5,3.5},q9[]={5.5,-4,3.5},r9[]={10.7,-4,3.5},s9[]={10.7,-2.5,3.5};
-// float p10[]={5.5,-4,3.5},q10[]={10.7,-4,3.5},r10[]={10.7,-5,4.5},s10[]={5.5,-5,5.5};
-// float p11[]={5.5,-6,3.5},q11[]={10.7,-6,3.5},r11[]={10.7,-5,4.5},s11[]={5.5,-5,5.5};
-// float p12[]={10.7,-9,2},q12[]={10.7,-9,4},r12[]={12.7,-9,4},s12[]={12.7,-9,2};
-// float p13[]={10.7,-1,2},q13[]={10.7,-1,4},r13[]={12.7,-1,4},s13[]={12.7,-1,2};
-// float p14[]={0.5,-1,1},q14[]={0.5,-1,3},r14[]={5.5,-1,3},s14[]={5.5,-1,1};
-// float p15[]={0.5,-9,1},q15[]={0.5,-9,3},r15[]={5.5,-9,3},s15[]={5.5,-9,1};
-// float p20[]={10.7,-7.5,1},q20[]={10.7,-7.5,3.5},r20[]={10.7,-2.5,3.5},
-// s20[]={10.7,-2.5,1};
-
-enum
-{	//Diferentes views
-	HELICOPTER,FRONT,SIDE,BACK
-} viewpoint = BACK;
+enum{BACK} viewpoint = BACK;
 
 
-int MID=565; //Distancia do carro na via do centro 
-int start=0;
+int MID=565; //Distancia do carro na via do centro
+int start=1;
 float auxImunidade=0;
 
 char KEY; //Guardar tecla que usuario clicou
@@ -100,21 +81,6 @@ void cone(){
 	glEnd();
 }
 
-void listracone(){
-	float j,i,x,y,r=10;
-	glColor3f(1,1,1);
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(0,0,20);
-	for(i=100;i<=361;i+=50){
-		for(j=0; j<30; j++){	
-			x= r * cos(i*c);
-			y= r * sin(i*c);
-			glVertex3f(x,y,0);
-		}
-	}
-	glEnd();
-}
-
 //Cone laranja pra obstaculo
 void conelaranja(float a,float b){
 	glColor3f(1, 0.35, 0);
@@ -122,10 +88,6 @@ void conelaranja(float a,float b){
 		glTranslatef(a,b,0);
 		glScalef(0.6, 0.4, 0.5);
 		cone();
-		listracone();
-	glPopMatrix();
-	glPushMatrix();
-		listracone();
 	glPopMatrix();
 
 }
@@ -217,7 +179,7 @@ void estrela(float x, float y, float z){
 	glPopMatrix();;
 }
 
-//Criar um cilindro
+//Cria um cilindro
 void cylinder(float r,float y){
 	float x, z; int d;
 	glBegin(GL_QUAD_STRIP);
@@ -230,9 +192,9 @@ void cylinder(float r,float y){
 	}
 	glEnd();
 }
-//Criar arbusto para paisagem
+//Cria arbusto para paisagem
 void arbusto (float a,float b){
-	glPushMatrix();		
+	glPushMatrix();
 	glColor3f(0.8, 0.45, 0.35);
 	glPushMatrix();
 		glTranslatef(a,b,1);
@@ -258,7 +220,7 @@ void arbusto (float a,float b){
 		cone();
 	glPopMatrix();
 	glPushMatrix();
-		glTranslatef(a,b,1);		
+		glTranslatef(a,b,1);
 		glScalef(0.6, 0.4, 0.5);
 		glRotatef(-45,1,90,0);
 		cone();
@@ -267,7 +229,7 @@ void arbusto (float a,float b){
 }
 //Cria estrela de ganhar ponto ("obstaculo")
 void estrelaP (float a,float b){
-	glPushMatrix();		
+	glPushMatrix();
 		glColor3f(1, 1, 0);
 		glPushMatrix();
 			glTranslatef(a,b,10);
@@ -282,7 +244,7 @@ void estrelaP (float a,float b){
 			cone();
 		glPopMatrix();
 		glPushMatrix();
-			glTranslatef(a,b,10);		
+			glTranslatef(a,b,10);
 			glScalef(0.6, 0.4, 0.5);
 			glRotatef(-45,1,90,0);
 			cone();
@@ -318,7 +280,7 @@ void tree2(float a,float b)
 	glColor3f(0.8, 0.65, 0.55);
 	glPushMatrix();
 		glTranslatef(a,b,25);
-		glutSolidSphere(15,10,10);		
+		glutSolidSphere(15,10,10);
 	glPopMatrix();
 	glPushMatrix();
 		glTranslatef(a,b,35);
@@ -330,11 +292,11 @@ void tree2(float a,float b)
 	glPopMatrix();
 }
 
-//lado pneu
+//Listra lado pneu
 void alloy(float R1,float R2)
 {
 	float X,Y,Z;int y;
-	glColor3f(1,1,1);
+	glColor3f(0.4,0.4,0.4);
 	glBegin(GL_QUAD_STRIP);
 	for(y=0;y<=361;y+=1)
 	{
@@ -359,7 +321,7 @@ void actall(float R1,float R2)
 	glBegin(GL_QUADS);
 	for(i=0;i<=361;i+=120)
 	{
-		glColor3f(0,1,1);
+		glColor3f(0,0,0);
 		X=R1*cos(c*i);
 		Y=0;
 		Z=R1*sin(c*i);
@@ -383,7 +345,7 @@ void actall(float R1,float R2)
 	glEnd();
 }
 
-//Cria um cícurlo
+//Cria um círculo
 void circle(float R)
 {
 	float X,Y,Z;int i;
@@ -413,7 +375,7 @@ void rect(float p[],float q[],float r[],float s[])
 //Gerar o motorista
 void driver()
 {
-	glColor3f(0.5,0.2,0.8);
+	glColor3f(0.2,0.03,0.003);
 	//ombro - direito
 	glPushMatrix();
 		glTranslatef(3.5,-3.6,3);
@@ -442,7 +404,6 @@ void driver()
 		glTranslatef(3,-5,4);
 		glutSolidSphere (1.0, 20, 16);
 	glPopMatrix();
-
 
 	//Corpo
 	glPushMatrix();
@@ -476,7 +437,7 @@ void scenery()
 		cylinder(1000,1000);
 	glPopMatrix();
 
-	//Ground
+	//chao
 	glColor3f(0.41,0.28,0.22);
 	glPushMatrix();
 		glTranslatef(0,0,-1.1);
@@ -484,7 +445,7 @@ void scenery()
 		circle(1100);
 	glPopMatrix();
 
-	//Track
+	//pista
 	glColor3f(0.25,0.15,0.1);
 	track(610,510);
 
@@ -517,6 +478,7 @@ void scenery()
 		y=650*sin(c*p);
 		tree2(x,y);
 	}
+
 	for(p=0;p<=360;p+=120)
 	{
 
@@ -525,12 +487,20 @@ void scenery()
 		tree2(x,y);
 	}
 
+	for(p=0;p<=360;p+=180)
+	{
+
+		x=750*cos(c*p);
+		y=750*sin(c*p);
+		arbusto(x,y);
+	}
+
 	// arbusto lado direito
 	for(p=0;p<=360;p+=120)
 	{
 		x=420*cos(c*p);
 		y=420*sin(c*p);
-		arbusto(x,y);
+		tree2(x,y);
 	}
 
 		for(p=0;p<=360;p+=40)
@@ -541,16 +511,6 @@ void scenery()
 	}
 
 }
-
-// //Desenha triangulos, mas não usamos
-// void tri(float a[],float b[],float z[])
-// {
-// 	glBegin(GL_TRIANGLES);
-// 		glVertex3fv(a);
-// 		glVertex3fv(b);
-// 		glVertex3fv(z);
-// 	glEnd();
-// }
 
 //Junta os pneus, engrenagem, raias
 void wheels()
@@ -564,14 +524,14 @@ void wheels()
 	cylinder(2,2);
 	alloy(2,1.4);
 	actall(1.4,0.8);
-	glColor3f(1,1,1);
+	glColor3f(0,0,0);
 	circle(0.8);
 
 	glPushMatrix();
 		glTranslatef(0,2,0);
 		alloy(2,1.4);
 		actall(1.4,0.8);
-		glColor3f(0,1,1);
+		glColor3f(0,0,0);
 		circle(0.8);
 	glPopMatrix();
 
@@ -582,7 +542,7 @@ void wheels()
 		cylinder(2,2);
 		alloy(2,1.4);
 		actall(1.4,0.8);
-		glColor3f(0,1,1);
+		glColor3f(0,0,0);
 		circle(0.8);
 	glPopMatrix();
 
@@ -590,28 +550,15 @@ void wheels()
 		glTranslatef(0,10,0);
 		actall(1.4,0.8);
 		alloy(2,1.4);
-		glColor3f(0,1,1);
+		glColor3f(0,0,0);
 		circle(0.8);
 	glPopMatrix();
 
 }
 
 //Gerar o chassis do carro
-void chassis()
-{
-
-	//nao alterou em nada
-	// //Parameters For glMaterialfv() function
-	// GLfloat specular[] = { 0.7, 0.7, 0.7, 1.0 };
-	// GLfloat ambient[]={1,1,1,1},diffuse[]={0.7,0.7,0.7,1};
-	// GLfloat full_shininess[]={100.0};
-	// Material Properties
-	// glMaterialfv(GL_FRONT,GL_AMBIENT,ambient);
-	// glMaterialfv(GL_FRONT,GL_SPECULAR,specular);
-	// glMaterialfv(GL_FRONT,GL_DIFFUSE,diffuse);
-	// glMaterialfv(GL_FRONT,GL_SHININESS, full_shininess);
-
-	glColor3f(0.72,0.1,0);
+void chassis(){
+	glColor3f(0.25,0.2,0.2);
 	//modelando carro
 	rect(p1,q1,r1,s1); //baixo atras
 	rect(r2,s2,r1,s1);  //retangulo assento
@@ -654,16 +601,6 @@ void car()
 	glPopMatrix();
 }
 
-/*
-Criar estrutura de dados 'obstaculo'
-criar função que popula a pista com obstaculos
-criar funcao que compara posição atual do carro c obstaculo
-caso verdade carro 'bateu'
-encerrar jogo
-caso falso carro desviou
-muda a posição do obstaculo que acabou de ser desviado
-*/
-
 typedef struct Obstaculo_{
 	float obsX, obsY;
 	int modelo;
@@ -682,7 +619,6 @@ void iniciaObstaculos(){
 	int aleatorio;
 	srand(time(NULL));
 	int i;
-	printf("  Id    X    Y    M\n");
 	for(i=0;i<10;i++){
 		aleatorio = rand() %10;
 		if(aleatorio > 4){
@@ -693,14 +629,12 @@ void iniciaObstaculos(){
 				obs[i].obsY = 515*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//540
 				obs[i].obsX = 540*cos(c*(36*i));
 				obs[i].obsY = 540*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}else{
 			aleatorio = rand()%10;
@@ -710,14 +644,12 @@ void iniciaObstaculos(){
 				obs[i].obsY = 565*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}else{
 				//590
 				obs[i].obsX = 590*cos(c*(36*i));
 				obs[i].obsY = 590*sin(c*(36*i));
 				//randomizar opção de modelo
 				obs[i].modelo = rand() %3;
-				printf("%4d %4f %4f %4d\n", i, obs[i].obsX, obs[i].obsY, obs[i].modelo );
 			}
 		}
 	}
@@ -729,7 +661,6 @@ void populaPista(){
 	for(i=0;i<10;i++){
 			x=obs[i].obsX;
 			y=obs[i].obsY;
-			printf("obj:%f %f\n", obsH[i].obsX,obsH[i].obsY);
 
 			switch(obs[i].modelo){
 				case 0:
@@ -748,11 +679,6 @@ void populaPista(){
 				xH=obsH[i].obsX;
 				yH=obsH[i].obsY;
 				switch(obsH[i].modelo){
-
-
-
-
-
 					case 0:
 						conelaranja(xH,yH);
 					break;
@@ -774,7 +700,7 @@ void keys(unsigned char key,int x,int y)
 		KEY=key;
 		if(key=='W' || key=='w')
 		{
-			if(speed < 0.03){
+			if(speed < 0.025){
 				speed += 0.005;
 				start = 1;
 				showIntroMessage = 0;
@@ -784,10 +710,10 @@ void keys(unsigned char key,int x,int y)
 		}
 		if(key=='S' || key=='s')
 		{
-			if(speed > 0.01){
-				speed -= 0.01;
+			if(speed > 0.005){
+				speed -= 0.005;
 			}else{
-				speed = 0.01;
+				speed = 0.005;
 			}
 		}
 		if(key=='A' || key=='a')
@@ -824,71 +750,6 @@ void keys(unsigned char key,int x,int y)
 	}
 }
 
-//Função de camera
-void view()
-{
-	float pos[]={1000,1000,2000,1};//Posição da fonte de luz
-	// switch(viewpoint)
-	// {
-
-	// 		// case HELICOPTER:
-
-	// 		// glLightfv(GL_LIGHT0, GL_POSITION, pos);
-	// 		// gluLookAt(200,0,700,0,0,0,0,0,1);
-	// 		// scenery();
-	// 		// glPushMatrix();
-	// 		// 	glTranslatef(carx,cary,0);
-	// 		// 	glRotatef(angle*RAD_TO_DEG,0,0,-1);
-	// 		// 	car();
-	// 		// glPopMatrix();
-
-	// 		// break;
-
-
-	// 		// case SIDE:
- //      //
-	// 		// gluLookAt(-20.0,-20.0,15,0.0,0.0,2.0,0.0, 0.0,1.0);
-	// 		// car();
-	// 		// glPushMatrix();
-	// 		// 	glRotatef(angle*RAD_TO_DEG, 0.0,0.0,1.0);
-	// 		// 	glTranslatef(-carx,-cary,0);
-	// 		// 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-	// 		// 	();
-	// 		// glPopMatrix();
- //      //
-	// 		// break;
-
-	// 		// case FRONT:
-
-	// 		// gluLookAt(15.0,5.0,20,0.0,0.0,4.0,0.0,0.0,1.0);
-	// 		// car();
-	// 		// glPushMatrix();
-	// 		// 	glRotatef(angle*RAD_TO_DEG, 0.0,0.0,1.0);
-	// 		// 	glTranslatef(-carx,-cary,0);
-	// 		// 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-	// 		// 	scenery();
-	// 		// glPopMatrix();
-
-	// 		// break;
-
-	// 		case BACK:
-
-			gluLookAt(-12.0,6.0,13,15.0,6.0,2.0,0.0,0.0,1.0);
-			car();
-			glPushMatrix();
-				glRotatef(RAD_TO_DEG * angle, 0.0, 0.0, 1.0);
-
-				glTranslatef(-carx,-cary,0);
-				glLightfv(GL_LIGHT0, GL_POSITION, pos);
-				scenery();
-
-			glPopMatrix();
-
-	// 		break;
-
-	// }
-
-}
 
 //Idle Callback
 void idle()
@@ -901,27 +762,9 @@ void idle()
 		{
 			angle-=TWO_PI;
 		}
-
-		colisao();
 		carx=MID*sin(angle);
 		cary=MID*cos(angle);
 		viewpoint=BACK;
-		// switch(KEY)
-		// {
-		// case 'H':
-		// case 'h':viewpoint=HELICOPTER;break;
-
-		// // case 'S':
-		// // case 's':viewpoint=SIDE;break;
-
-		// case 'F':
-		// case 'f':viewpoint=FRONT;break;
-
-		// case 'B':
-		// case 'b':viewpoint=BACK;break;
-
-
-		// }
 		glutPostRedisplay();
 	}
 }
@@ -1017,9 +860,8 @@ void displayIntroMessage(){
 		glColor3f(1.0,0.0,0.0);
 		glTranslatef(16.0,27.0,20.0);
 		glScalef(0.04, 0.04, 0.035); // diminui o tamanho do fonte
-		glRotatef(90.0, 1.0,0.0,0.0); // rotaciona o texto
-		// glRotatef(-5.0, 0.0,1.0,0.0); // rotaciona o texto
-		glRotatef(-90.0, 0.0,1.0,0.0); // rotaciona o texto
+		glRotatef(90.0, 1.0,0.0,0.0);
+		glRotatef(-90.0, 0.0,1.0,0.0);
 
 		glLineWidth(2); // define a espessura da linha
 		atualizaLife();
@@ -1352,12 +1194,22 @@ void randomizaPista(){
 }
 }
 
-//Display Callback Function
+//Display Callback
 void display(){
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	view();
+	//3a pessoa
+	float pos[]={1000,1000,2000,1};//Posição da fonte de luz
+	gluLookAt(-12.0,6.0,13,15.0,6.0,2.0,0.0,0.0,1.0);
+	car();
+	glPushMatrix();
+		glRotatef(RAD_TO_DEG * angle, 0.0, 0.0, 1.0);
+		glTranslatef(-carx,-cary,0);
+		glLightfv(GL_LIGHT0, GL_POSITION, pos);
+		scenery();
+	glPopMatrix();
+
 	colisao();
 	randomizaPista();
 	displayScore();
